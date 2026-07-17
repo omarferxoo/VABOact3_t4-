@@ -17,8 +17,10 @@ class CategoriaFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = \Faker\Factory::create('es_MX');
+
         return [
-            'nombre' => \fake()->unique()->randomElement([
+            'nombre' => $faker->unique()->randomElement([
                 'Programacion',
                 'Diseno Web',
                 'Bases de Datos',
@@ -26,7 +28,7 @@ class CategoriaFactory extends Factory
                 'Productividad',
                 'Ciberseguridad',
             ]),
-            'descripcion' => \fake()->sentence(10),
+            'descripcion' => $faker->sentence(10),
         ];
     }
 }

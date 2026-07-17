@@ -17,9 +17,11 @@ class AlumnoFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = \Faker\Factory::create('es_MX');
+
         return [
-            'nombre' => \fake()->name(),
-            'email' => \fake()->unique()->safeEmail(),
+            'nombre' => $faker->name(),
+            'email' => $faker->unique()->safeEmail(),
         ];
     }
 }
