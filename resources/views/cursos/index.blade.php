@@ -64,7 +64,27 @@
         </div>
     </div>
 
-    <div class="mt-4">
-        {{ $cursos->links() }}
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-4">
+        <p class="text-secondary mb-0">
+            Mostrando {{ $cursos->firstItem() }} a {{ $cursos->lastItem() }} de {{ $cursos->total() }} cursos
+        </p>
+
+        <nav aria-label="Paginacion de cursos">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item {{ $cursos->onFirstPage() ? 'disabled' : '' }}">
+                    <a class="page-link" href="{{ $cursos->previousPageUrl() ?? '#' }}">Anterior</a>
+                </li>
+
+                @for ($page = 1; $page <= $cursos->lastPage(); $page++)
+                    <li class="page-item {{ $page === $cursos->currentPage() ? 'active' : '' }}">
+                        <a class="page-link" href="{{ $cursos->url($page) }}">{{ $page }}</a>
+                    </li>
+                @endfor
+
+                <li class="page-item {{ $cursos->hasMorePages() ? '' : 'disabled' }}">
+                    <a class="page-link" href="{{ $cursos->nextPageUrl() ?? '#' }}">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 @endsection
