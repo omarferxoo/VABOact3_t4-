@@ -20,7 +20,7 @@ class CursoFactory extends Factory
     {
         return [
             'categoria_id' => Categoria::query()->inRandomOrder()->value('id') ?? Categoria::factory(),
-            'titulo' => $this->faker->randomElement([
+            'titulo' => \fake()->randomElement([
                 'Laravel desde cero',
                 'PHP moderno',
                 'MySQL practico',
@@ -31,12 +31,12 @@ class CursoFactory extends Factory
                 'APIs REST con Laravel',
                 'Seguridad web basica',
                 'JavaScript para formularios',
-            ]) . ' ' . $this->faker->unique()->numberBetween(1, 99),
-            'descripcion' => $this->faker->paragraph(2),
-            'instructor' => $this->faker->name(),
-            'duracion_horas' => $this->faker->numberBetween(12, 80),
-            'precio' => $this->faker->randomFloat(2, 250, 2500),
-            'fecha_inicio' => $this->faker->dateTimeBetween('+1 week', '+5 months')->format('Y-m-d'),
+            ]) . ' ' . \fake()->unique()->numberBetween(1, 99),
+            'descripcion' => \fake()->paragraph(2),
+            'instructor' => \fake()->name(),
+            'duracion_horas' => \fake()->numberBetween(12, 80),
+            'precio' => \fake()->randomFloat(2, 250, 2500),
+            'fecha_inicio' => \fake()->dateTimeBetween('+1 week', '+5 months')->format('Y-m-d'),
         ];
     }
 }
