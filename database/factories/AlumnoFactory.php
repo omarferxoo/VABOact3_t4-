@@ -18,8 +18,8 @@ class AlumnoFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'nombre' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
         ];
     }
 }

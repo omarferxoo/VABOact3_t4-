@@ -18,7 +18,7 @@ class CategoriaFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre' => fake()->unique()->randomElement([
+            'nombre' => $this->faker->unique()->randomElement([
                 'Programacion',
                 'Diseno Web',
                 'Bases de Datos',
@@ -26,7 +26,7 @@ class CategoriaFactory extends Factory
                 'Productividad',
                 'Ciberseguridad',
             ]),
-            'descripcion' => fake()->sentence(10),
+            'descripcion' => $this->faker->sentence(10),
         ];
     }
 }
