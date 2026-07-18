@@ -1,59 +1,203 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# VABOact3_t4 - CRUD de cursos en Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Proyecto realizado para la actividad 3 del tema 4. Consiste en un CRUD completo en Laravel 12 conectado a MySQL, usando Eloquent, migraciones, seeders, factories, paginacion y relaciones entre modelos.
 
-## About Laravel
+## Objetivo del proyecto
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+El sistema permite administrar un catalogo de cursos. Cada curso pertenece a una categoria y puede tener varios alumnos inscritos. La aplicacion esta pensada para demostrar el uso de Laravel con MVC, Eloquent ORM y despliegue en un VPS con Nginx, PHP-FPM y MySQL.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Entidad principal
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+La entidad principal del CRUD es `Curso`.
 
-## Learning Laravel
+Campos principales:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- `id`
+- `categoria_id`
+- `titulo`
+- `descripcion`
+- `instructor`
+- `duracion_horas`
+- `precio`
+- `fecha_inicio`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Operaciones implementadas:
 
-## Laravel Sponsors
+- Crear cursos
+- Listar cursos con paginacion
+- Ver detalle de un curso
+- Editar cursos
+- Eliminar cursos
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Relaciones Eloquent
 
-### Premium Partners
+### Relacion uno a muchos
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Una `Categoria` tiene muchos `Cursos`.
 
-## Contributing
+Ejemplo:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```php
+// Categoria.php
+public function cursos()
+{
+    return $this->hasMany(Curso::class);
+}
+```
 
-## Code of Conduct
+Cada curso pertenece a una sola categoria:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```php
+// Curso.php
+public function categoria()
+{
+    return $this->belongsTo(Categoria::class);
+}
+```
 
-## Security Vulnerabilities
+Esta relacion se muestra en la tabla principal del CRUD, en la columna `Categoria`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Relacion muchos a muchos
 
-## License
+Un `Curso` puede tener muchos `Alumnos`, y un `Alumno` puede estar inscrito en muchos cursos.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Esta relacion se maneja con la tabla pivote:
+
+```text
+alumno_curso
+```
+
+Ejemplo:
+
+```php
+// Curso.php
+public function alumnos()
+{
+    return $this->belongsToMany(Alumno::class)->withTimestamps();
+}
+```
+
+La relacion se muestra en el listado con el numero de alumnos inscritos y en la vista de detalle del curso.
+
+## Seeder y Factory
+
+El proyecto usa factories y seeders para llenar la base de datos con informacion de prueba.
+
+Datos generados:
+
+- 5 categorias
+- 30 alumnos
+- 24 cursos
+- relaciones entre alumnos y cursos
+
+Esto permite probar la paginacion y visualizar las relaciones desde el inicio.
+
+Comando usado:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+## Paginacion
+
+El listado de cursos usa paginacion de Laravel:
+
+```php
+Curso::with(['categoria', 'alumnos'])->latest()->paginate(8);
+```
+
+La vista muestra controles de paginacion con Bootstrap:
+
+```text
+Anterior | 1 | 2 | 3 | Siguiente
+```
+
+## Tecnologias utilizadas
+
+- Laravel 12
+- PHP 8.3
+- MySQL
+- Eloquent ORM
+- Bootstrap 5
+- Nginx
+- PHP-FPM
+- Composer
+
+## Instalacion local
+
+Clonar el repositorio:
+
+```bash
+git clone https://github.com/omarferxoo/VABOact3_t4-.git
+cd VABOact3_t4-
+```
+
+Instalar dependencias:
+
+```bash
+composer install
+```
+
+Crear el archivo `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Configurar los datos de la base de datos en `.env` y generar la llave:
+
+```bash
+php artisan key:generate
+```
+
+Ejecutar migraciones y seeders:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Levantar el servidor local:
+
+```bash
+php artisan serve
+```
+
+## Despliegue en VPS
+
+El proyecto fue clonado en el VPS y configurado para funcionar con Nginx apuntando a la carpeta `public/`, como requiere Laravel.
+
+Ruta del proyecto en el VPS:
+
+```text
+/var/www/html/VABOact3t4/
+```
+
+Ruta publica:
+
+```text
+/var/www/html/VABOact3t4/public/
+```
+
+URL funcionando:
+
+```text
+http://168.231.75.27/VABOact3t4/
+```
+
+## Enlaces de entrega
+
+Repositorio:
+
+```text
+https://github.com/omarferxoo/VABOact3_t4-
+```
+
+Proyecto en VPS:
+
+```text
+http://168.231.75.27/VABOact3t4/
+```
+
+## Nota de seguridad
+
+El archivo `.env` no se sube al repositorio porque contiene credenciales de la base de datos y configuracion sensible del servidor. La carpeta `vendor/` tampoco se sube, ya que las dependencias se instalan con Composer.
